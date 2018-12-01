@@ -1,23 +1,21 @@
 package com.github.gabrielbb.cutout;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.theartofdev.edmodo.cropper.CropImage;
-
 public class CutOut {
 
     public static final short CUTOUT_ACTIVITY_REQUEST_CODE = 368;
-    static final String CUTOUT_EXTRA_SOURCE = "CUTOUT_EXTRA_SOURCE";
-    public static final String CUTOUT_EXTRA_AD_ID = "CUTOUT_EXTRA_AD_ID";
-
-    static final String CUTOUT_EXTRA_RESULT = "CUTOUT_EXTRA_RESULT";
     public static final short CUTOUT_ACTIVITY_RESULT_ERROR_CODE = 3680;
+
+    static final String CUTOUT_EXTRA_SOURCE = "CUTOUT_EXTRA_SOURCE";
+    static final String CUTOUT_EXTRA_AD_ID = "CUTOUT_EXTRA_AD_ID";
+    static final String CUTOUT_EXTRA_RESULT = "CUTOUT_EXTRA_RESULT";
+    static final String CUTOUT_EXTRA_BORDER = "CUTOUT_EXTRA_BORDER";
 
     public static ActivityBuilder activity() {
         return new ActivityBuilder(null);
@@ -41,6 +39,8 @@ public class CutOut {
         @Nullable
         private String adId;
 
+        private boolean bordered;
+
         private ActivityBuilder(@Nullable Uri source) {
             mSource = source;
         }
@@ -61,11 +61,20 @@ public class CutOut {
                 intent.putExtra(CUTOUT_EXTRA_AD_ID, adId);
             }
 
+            if (bordered) {
+                intent.putExtra(CUTOUT_EXTRA_BORDER, true);
+            }
+
             return intent;
         }
 
-        public ActivityBuilder setAd(String adId) {
+        public ActivityBuilder ad(String adId) {
             this.adId = adId;
+            return this;
+        }
+
+        public ActivityBuilder bordered() {
+            this.bordered = true;
             return this;
         }
 

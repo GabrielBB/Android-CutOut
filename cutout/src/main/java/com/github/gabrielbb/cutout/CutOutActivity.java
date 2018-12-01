@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -172,13 +173,15 @@ public class CutOutActivity extends AppCompatActivity {
     }
 
     private void startSaveStickerTask() {
-        Bitmap image = BitmapUtility.getBorderedBitmap(this.drawView.getDrawingCache(), BORDER_COLOR, BORDER_SIZE);
-        new SaveDrawingTask(this).execute(image);
+        if (getIntent().getBooleanExtra(CutOut.CUTOUT_EXTRA_BORDER, false)) {
+            Bitmap image = BitmapUtility.getBorderedBitmap(this.drawView.getDrawingCache(), BORDER_COLOR, BORDER_SIZE);
+            new SaveDrawingTask(this).execute(image);
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         if (requestCode == WRITE_EXTERNAL_STORAGE_CODE) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0
@@ -286,15 +289,18 @@ public class CutOutActivity extends AppCompatActivity {
 
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
+            Intent intent = new Intent();
+
             if (resultCode == Activity.RESULT_OK) {
 
                 drawView.setUri(result.getUri());
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-
-                Intent intent = new Intent();
                 intent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, result.getError());
                 setResult(CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE, intent);
+                finish();
+            } else {
+                setResult(Activity.RESULT_CANCELED, intent);
                 finish();
             }
         } else if (requestCode == INTRO_REQUEST) {
