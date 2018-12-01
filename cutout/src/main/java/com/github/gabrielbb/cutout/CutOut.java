@@ -94,8 +94,8 @@ public class CutOut {
         }*/
     }
 
-    public static String getUri(@Nullable Intent data) {
-        return data != null ? data.getStringExtra(CUTOUT_EXTRA_RESULT) : null;
+    public static Uri getUri(@Nullable Intent data) {
+        return data != null ? data.getParcelableExtra(CUTOUT_EXTRA_RESULT) : null;
     }
 
     public static Exception getError(@Nullable Intent data) {

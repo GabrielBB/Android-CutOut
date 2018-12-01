@@ -12,12 +12,14 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -32,6 +34,10 @@ import com.google.android.gms.ads.AdView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
@@ -321,7 +327,7 @@ public class CutOutActivity extends AppCompatActivity {
         drawView.redo();
     }
 
-    private static class SaveDrawingTask extends AsyncTask<Bitmap, Void, String> {
+    private static class SaveDrawingTask extends AsyncTask<Bitmap, Void, Pair<String, Exception>> {
         private final WeakReference<CutOutActivity> activityWeakReference;
 
         SaveDrawingTask(CutOutActivity activity) {
@@ -335,19 +341,30 @@ public class CutOutActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Bitmap... bitmaps) {
-            return MediaStore.Images.Media.insertImage(activityWeakReference.get().getApplicationContext().getContentResolver(), bitmaps[0], UUID.randomUUID().toString(), null);
+        protected Pair<String, Exception> doInBackground(Bitmap... bitmaps) {
+            File file = new File(Environment.getExternalStorageDirectory().toString(), UUID.randomUUID().toString() + ".png");
+
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                bitmaps[0].compress(Bitmap.CompressFormat.PNG, 100, out);
+                return new Pair<>(file.getAbsolutePath(), null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new Pair<>(null, e);
+            }
         }
 
-        protected void onPostExecute(String uri) {
-            super.onPostExecute(uri);
+        protected void onPostExecute(Pair<String, Exception> result) {
+            super.onPostExecute(result);
+
             Intent resultIntent = new Intent();
 
-            if (uri != null) {
+            if (result.first != null) {
+                Uri uri = Uri.parse(result.first);
+
                 resultIntent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, uri);
                 activityWeakReference.get().setResult(Activity.RESULT_OK, resultIntent);
             } else {
-                resultIntent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, new Exception("CutOut could not saved image to gallery"));
+                resultIntent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, result.second);
                 activityWeakReference.get().setResult(CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE, resultIntent);
             }
 
