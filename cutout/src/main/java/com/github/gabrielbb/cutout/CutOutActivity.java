@@ -46,6 +46,7 @@ import top.defaults.checkerboarddrawable.CheckerboardDrawable;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.github.gabrielbb.cutout.CutOut.CUTOUT_EXTRA_INTRO;
 
 public class CutOutActivity extends AppCompatActivity {
 
@@ -158,11 +159,11 @@ public class CutOutActivity extends AppCompatActivity {
             adViewContainer.setVisibility(View.GONE);
         }
 
-        if (getPreferences(Context.MODE_PRIVATE).getBoolean(INTRO_SHOWN, false)) {
-            start();
-        } else {
+        if (getIntent().getBooleanExtra(CUTOUT_EXTRA_INTRO, false) && !getPreferences(Context.MODE_PRIVATE).getBoolean(INTRO_SHOWN, false)) {
             Intent intent = new Intent(this, IntroActivity.class);
             startActivityForResult(intent, INTRO_REQUEST_CODE);
+        } else {
+            start();
         }
     }
 
@@ -444,10 +445,6 @@ public class CutOutActivity extends AppCompatActivity {
                 activityWeakReference.get().exitWithError(result.second);
             }
         }
-    }
-
-    public Bitmap getCurrentBitmap() {
-        return this.drawView.getDrawingCache();
     }
 
 }

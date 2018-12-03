@@ -3,11 +3,12 @@ package com.github.gabrielbb.cutout;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.ViewAssertion;
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.rule.GrantPermissionRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.github.gabrielbb.cutout.test.MainActivity;
@@ -18,16 +19,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -41,6 +46,9 @@ public class MainActivityTest {
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(CAMERA, WRITE_EXTERNAL_STORAGE);
 
     @Before
     public void init() {
@@ -61,29 +69,65 @@ public class MainActivityTest {
         assertNotEquals(imageView.getTag(), initialUri);
     }
 
-    public void testDefaultActivatedActionButton() {
-        onView(withId(R.id.manual_clear_button)).check(matches(isEnabled()));
+    public void testDefaultActivatedTool() {
+        CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
+
+        assertTrue(cutOutActivity.findViewById(R.id.manual_clear_button).isActivated());
     }
 
+
     @Test
-    public void testMagicToolButtonEnabled() {
+    public void testMagicToolButtonClick() {
         CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
 
         onView(withId(R.id.auto_clear_button)).perform(click());
+        assertTrue(cutOutActivity.findViewById(R.id.auto_clear_button).isActivated());
+        assertFalse(cutOutActivity.findViewById(R.id.manual_clear_button).isActivated());
+        assertFalse(cutOutActivity.findViewById(R.id.zoom_button).isActivated());
+    }
 
+    @Test
+    public void testManualToolButtonClick() {
+        CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
+
+        onView(withId(R.id.manual_clear_button)).perform(click());
+        assertTrue(cutOutActivity.findViewById(R.id.manual_clear_button).isActivated());
+        assertFalse(cutOutActivity.findViewById(R.id.auto_clear_button).isActivated());
+        assertFalse(cutOutActivity.findViewById(R.id.zoom_button).isActivated());
+    }
+
+    @Test
+    public void testZoomButtonClick() {
+        CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
+
+        onView(withId(R.id.zoom_button)).perform(click());
+        assertTrue(cutOutActivity.findViewById(R.id.zoom_button).isActivated());
+        assertFalse(cutOutActivity.findViewById(R.id.manual_clear_button).isActivated());
+        assertFalse(cutOutActivity.findViewById(R.id.auto_clear_button).isActivated());
     }
 
     @Test
     public void testMagicToolEffect() {
-        CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
+        final CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
 
-        Bitmap initialBitmap = cutOutActivity.getCurrentBitmap();
+        testMagicToolButtonClick();
+
+        final DrawView drawView = cutOutActivity.findViewById(R.id.drawView);
+
+        final Bitmap initialBitmap = drawView.getCurrentBitmap();
 
         onView(withId(R.id.drawView)).perform(click());
 
-        Bitmap postClickBitmap = cutOutActivity.getCurrentBitmap();
+        final View loadingModal = cutOutActivity.findViewById(R.id.loadingModal);
 
+        do {
+            SystemClock.sleep(2000);
+        }
+        while (loadingModal.getVisibility() == View.VISIBLE);
 
+        final Bitmap postClickBitmap = drawView.getCurrentBitmap();
+
+        assertFalse(initialBitmap.sameAs(postClickBitmap));
     }
 
     private Activity getCurrentActivity() {

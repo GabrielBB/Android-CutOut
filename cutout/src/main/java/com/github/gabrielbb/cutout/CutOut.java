@@ -17,6 +17,7 @@ public class CutOut {
     static final String CUTOUT_EXTRA_RESULT = "CUTOUT_EXTRA_RESULT";
     static final String CUTOUT_EXTRA_BORDER = "CUTOUT_EXTRA_BORDER";
     static final String CUTOUT_EXTRA_CROP = "CUTOUT_EXTRA_CROP";
+    static final String CUTOUT_EXTRA_INTRO = "CUTOUT_EXTRA_INTRO";
 
     public static ActivityBuilder activity() {
         return new ActivityBuilder(null);
@@ -36,13 +37,11 @@ public class CutOut {
          */
         @Nullable
         private final Uri mSource;
-
         @Nullable
         private String adId;
-
         private boolean bordered;
-
         private boolean crop = true;
+        private boolean intro;
 
         private ActivityBuilder(@Nullable Uri source) {
             mSource = source;
@@ -72,6 +71,10 @@ public class CutOut {
                 intent.putExtra(CUTOUT_EXTRA_CROP, true);
             }
 
+            if (intro) {
+                intent.putExtra(CUTOUT_EXTRA_INTRO, true);
+            }
+
             return intent;
         }
 
@@ -87,6 +90,11 @@ public class CutOut {
 
         public ActivityBuilder noCrop() {
             this.crop = false;
+            return this;
+        }
+
+        public ActivityBuilder intro() {
+            this.intro = true;
             return this;
         }
 

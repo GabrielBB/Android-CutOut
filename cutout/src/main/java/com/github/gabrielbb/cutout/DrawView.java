@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -29,7 +28,6 @@ class DrawView extends View {
     private Paint pathPaint;
 
     private Bitmap imageBitmap;
-    private Uri uri;
     private final Stack<Pair<Pair<Path, Paint>, Bitmap>> cuts = new Stack<>();
     private final Stack<Pair<Pair<Path, Paint>, Bitmap>> undoneCuts = new Stack<>();
 
@@ -221,6 +219,10 @@ class DrawView extends View {
         resizeBitmap(getWidth(), getHeight());
     }
 
+    public Bitmap getCurrentBitmap() {
+        return this.imageBitmap;
+    }
+
     public void setAction(DrawViewAction newAction) {
         this.currentAction = newAction;
     }
@@ -285,7 +287,7 @@ class DrawView extends View {
                 }
             }
 
-            Bitmap newBitmap = Bitmap.createBitmap(width, height, oldBitmap.getConfig());
+            Bitmap newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             newBitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 
             return newBitmap;
