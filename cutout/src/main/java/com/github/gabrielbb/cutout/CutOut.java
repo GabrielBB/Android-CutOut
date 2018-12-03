@@ -16,13 +16,14 @@ public class CutOut {
     static final String CUTOUT_EXTRA_AD_ID = "CUTOUT_EXTRA_AD_ID";
     static final String CUTOUT_EXTRA_RESULT = "CUTOUT_EXTRA_RESULT";
     static final String CUTOUT_EXTRA_BORDER = "CUTOUT_EXTRA_BORDER";
+    static final String CUTOUT_EXTRA_CROP = "CUTOUT_EXTRA_CROP";
 
     public static ActivityBuilder activity() {
         return new ActivityBuilder(null);
     }
 
-    public static ActivityBuilder activity(Uri mSource) {
-        return new ActivityBuilder(mSource);
+    public static ActivityBuilder activity(Uri source) {
+        return new ActivityBuilder(source);
     }
 
     /**
@@ -40,6 +41,8 @@ public class CutOut {
         private String adId;
 
         private boolean bordered;
+
+        private boolean crop = true;
 
         private ActivityBuilder(@Nullable Uri source) {
             mSource = source;
@@ -65,6 +68,10 @@ public class CutOut {
                 intent.putExtra(CUTOUT_EXTRA_BORDER, true);
             }
 
+            if (crop) {
+                intent.putExtra(CUTOUT_EXTRA_CROP, true);
+            }
+
             return intent;
         }
 
@@ -78,6 +85,11 @@ public class CutOut {
             return this;
         }
 
+        public ActivityBuilder noCrop() {
+            this.crop = false;
+            return this;
+        }
+
         /**
          * Start {@link CutOutActivity}.
          *
@@ -86,12 +98,6 @@ public class CutOut {
         public void start(@NonNull Activity activity) {
             activity.startActivityForResult(getIntent(activity), CUTOUT_ACTIVITY_REQUEST_CODE);
         }
-
-        /*
-        public ActivityBuilder setSnapRadius(float snapRadius) {
-            mOptions.snapRadius = snapRadius;
-            return this;
-        }*/
     }
 
     public static Uri getUri(@Nullable Intent data) {

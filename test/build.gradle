@@ -6,7 +6,7 @@ android {
         applicationId rootProject.PUBLISH_GROUP_ID + "." + rootProject.PUBLISH_ARTIFACT_ID + ".test"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
-        versionCode 1
+        versionCode rootProject.versionCode
         versionName rootProject.PUBLISH_VERSION
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -18,8 +18,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility rootProject.javaVersion
+        targetCompatibility rootProject.javaVersion
     }
 }
 

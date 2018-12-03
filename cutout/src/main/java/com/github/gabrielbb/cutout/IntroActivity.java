@@ -17,9 +17,9 @@ public class IntroActivity extends AppIntro {
 
         // Add your slide fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
-        addSlide(AppIntroFragment.newInstance("Automatic background clearing", "Use the Magic Wand tool and touch parts of the background you want to erase", R.drawable.intro_magic_wand, Color.parseColor("#373737")));
-        addSlide(AppIntroFragment.newInstance("Manual background clearing", "Use the Pencil tool to erase the background dragging your finger around the screen", R.drawable.intro_pencil, Color.parseColor("#E64E4E")));
-        addSlide(AppIntroFragment.newInstance("Zooming and Moving the picture", "Use the Magnifier tool to Zoom in/out so you can make better cuts", R.drawable.intro_magnifier, Color.parseColor("#4E5DE6")));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.intro_magic_title), getString(R.string.intro_magic_description), R.drawable.intro_magic_wand, getResources().getColor(R.color.intro_magic_background_color)));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.intro_manual_title), getString(R.string.intro_manual_description), R.drawable.intro_pencil, getResources().getColor(R.color.intro_manual_background_color)));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.intro_zoom_title), getString(R.string.intro_zoom_description), R.drawable.intro_magnifier, getResources().getColor(R.color.intro_zoom_background_color)));
 
         // OPTIONAL METHODS
         // Override bar/separator color.

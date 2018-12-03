@@ -30,6 +30,8 @@ ext {
     compileSdkVersion = 28
     minSdkVersion = 15
     buildToolsVersion = '28.0.3'
+    versionCode = 1
+    javaVersion = JavaVersion.VERSION_1_8
     PUBLISH_GROUP_ID = 'com.github.gabrielbb'
     PUBLISH_ARTIFACT_ID = 'cutout'
     PUBLISH_VERSION = '1.0.0'

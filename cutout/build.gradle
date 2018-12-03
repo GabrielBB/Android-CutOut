@@ -5,7 +5,7 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
-        versionCode 1
+        versionCode rootProject.versionCode
         versionName rootProject.PUBLISH_VERSION
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,8 +20,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility rootProject.javaVersion
+        targetCompatibility rootProject.javaVersion
     }
 }
 
@@ -34,5 +34,5 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation 'com.alexvasilkov:gesture-views:2.5.2'
     implementation 'com.github.apl-devs:appintro:v4.2.3'
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.jkwiecien:EasyImage:1.3.1'
 }

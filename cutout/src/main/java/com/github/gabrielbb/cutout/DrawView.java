@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
@@ -16,11 +15,10 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+
 import java.lang.ref.WeakReference;
 import java.util.Stack;
+
 import static com.github.gabrielbb.cutout.DrawView.DrawViewAction.AUTO_CLEAR;
 import static com.github.gabrielbb.cutout.DrawView.DrawViewAction.MANUAL_CLEAR;
 import static com.github.gabrielbb.cutout.DrawView.DrawViewAction.ZOOM;
@@ -75,30 +73,10 @@ class DrawView extends View {
 
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int newWidth, int newHeight, int oldWidth, int oldHeight) {
+        super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight);
 
-        getBitmapFromUri();
-    }
-
-    private void getBitmapFromUri() {
-        if (getWidth() > 0 && getHeight() > 0 && this.uri != null) {
-            final ImageView imageView = new ImageView(getContext());
-
-            Picasso.get().load(this.uri).into(imageView, new Callback() {
-                @Override
-                public void onSuccess() {
-                    imageBitmap = BitmapUtility.getResizedBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap(), getWidth(), getHeight());
-                    imageBitmap.setHasAlpha(true);
-                    invalidate();
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        }
+        resizeBitmap(newWidth, newHeight);
     }
 
     @Override
@@ -230,9 +208,17 @@ class DrawView extends View {
         return super.onTouchEvent(ev);
     }
 
-    public void setUri(Uri uri) {
-        this.uri = uri;
-        getBitmapFromUri();
+    private void resizeBitmap(int width, int height) {
+        if (width > 0 && height > 0 && imageBitmap != null) {
+            imageBitmap = BitmapUtility.getResizedBitmap(this.imageBitmap, width, height);
+            imageBitmap.setHasAlpha(true);
+            invalidate();
+        }
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.imageBitmap = bitmap;
+        resizeBitmap(getWidth(), getHeight());
     }
 
     public void setAction(DrawViewAction newAction) {

@@ -13,7 +13,6 @@
         android:layout_width="361dp"
         android:layout_height="431dp"
         android:contentDescription="@string/image_description"
-        android:src="@drawable/image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

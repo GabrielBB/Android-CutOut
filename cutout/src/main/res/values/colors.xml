@@ -12,4 +12,7 @@
     <color name="Modal">#b7000000</color>
     <color name="bg_row_background">#ff303e</color>
     <color name="bg_row_foreground">#fcfcfc</color>
+    <color name="intro_magic_background_color">#373737</color>
+    <color name="intro_manual_background_color">#E64E4E</color>
+    <color name="intro_zoom_background_color">#4E5DE6</color>
 </resources>

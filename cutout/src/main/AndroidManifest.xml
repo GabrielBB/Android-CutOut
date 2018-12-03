@@ -14,7 +14,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name="com.github.gabrielbb.cutout.IntroActivity"
-            android:label="Quick look"
+            android:label="@string/intro_label"
             android:theme="@style/Base.Theme.AppCompat" />
     </application>
 

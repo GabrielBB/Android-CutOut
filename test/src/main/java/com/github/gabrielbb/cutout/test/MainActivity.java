@@ -25,8 +25,22 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
 
+        final Uri imageIconUri = getUriFromDrawable(R.drawable.image_icon);
+        imageView.setImageURI(imageIconUri);
+        imageView.setTag(imageIconUri);
+
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> CutOut.activity().bordered().ad("ca-app-pub-3940256099942544/6300978111").start(this));
+
+        fab.setOnClickListener(view -> {
+            final Uri testImageUri = getUriFromDrawable(R.drawable.test_image);
+
+            CutOut.activity(testImageUri)
+                    .bordered()
+                    .noCrop()
+                    .ad(getString(R.string.test_ad_id))
+                    .start(this);
+        });
+
     }
 
     @Override
@@ -39,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = CutOut.getUri(data);
 
                 imageView.setImageURI(uri);
+                imageView.setTag(uri);
 
             } else if (resultCode == CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception ex = CutOut.getError(data);
@@ -47,5 +62,9 @@ public class MainActivity extends AppCompatActivity {
                 // CutOut Activity was cancelled by the user
             }
         }
+    }
+
+    public Uri getUriFromDrawable(int drawableId) {
+        return Uri.parse("android.resource://" + getPackageName() + "/drawable/" + getApplicationContext().getResources().getResourceEntryName(drawableId));
     }
 }

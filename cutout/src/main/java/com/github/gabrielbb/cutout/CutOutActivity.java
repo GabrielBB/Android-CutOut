@@ -20,12 +20,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.alexvasilkov.gestures.views.interfaces.GestureView;
 import com.google.android.gms.ads.AdRequest;
@@ -35,12 +35,13 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
 import top.defaults.checkerboarddrawable.CheckerboardDrawable;
 
 import static android.view.View.INVISIBLE;
@@ -48,19 +49,22 @@ import static android.view.View.VISIBLE;
 
 public class CutOutActivity extends AppCompatActivity {
 
-    private static final int INTRO_REQUEST = 4;
-    private static final String INTRO_SHOWN = "intro_shown";
+    private static final int INTRO_REQUEST_CODE = 4;
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
+    private static final int IMAGE_CHOOSER_REQUEST_CODE = 2;
+    private static final int CAMERA_REQUEST_CODE = 3;
 
+    private static final String INTRO_SHOWN = "INTRO_SHOWN";
     private FrameLayout loadingModal;
     private GestureView gestureView;
     private DrawView drawView;
     private LinearLayout manualClearSettingsLayout;
-    private CropImage.ActivityBuilder cropImageBuilder;
 
     private static final short MAX_ERASER_SIZE = 150;
     private static final short BORDER_SIZE = 45;
     private static final int BORDER_COLOR = Color.WHITE;
+    private static final float MAX_ZOOM = 4F;
+    private static final String SAVED_IMAGE_FORMAT = "png";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,7 @@ public class CutOutActivity extends AppCompatActivity {
         strokeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                drawView.setStrokeWidth(progress);
+
             }
 
             @Override
@@ -108,7 +112,7 @@ public class CutOutActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                drawView.setStrokeWidth(seekBar.getProgress());
             }
         });
 
@@ -120,7 +124,7 @@ public class CutOutActivity extends AppCompatActivity {
         manualClearSettingsLayout = findViewById(R.id.manual_clear_settings_layout);
 
         setUndoRedo();
-        initializeDrawViewActionButtons();
+        initializeActionButtons();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -135,18 +139,7 @@ public class CutOutActivity extends AppCompatActivity {
 
         Button doneButton = findViewById(R.id.done);
 
-        doneButton.setOnClickListener(v -> {
-
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                startSaveStickerTask();
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        WRITE_EXTERNAL_STORAGE_CODE);
-            }
-
-        });
+        doneButton.setOnClickListener(v -> startSaveDrawingTask());
 
         FrameLayout adViewContainer = findViewById(R.id.adViewContainer);
 
@@ -165,58 +158,105 @@ public class CutOutActivity extends AppCompatActivity {
             adViewContainer.setVisibility(View.GONE);
         }
 
-
-        if (getIntent().hasExtra(CutOut.CUTOUT_EXTRA_SOURCE)) {
-            String sourceUri = getIntent().getStringExtra(CutOut.CUTOUT_EXTRA_SOURCE);
-
-            cropImageBuilder = CropImage.activity(Uri.parse(sourceUri));
+        if (getPreferences(Context.MODE_PRIVATE).getBoolean(INTRO_SHOWN, false)) {
+            start();
         } else {
-            cropImageBuilder = CropImage.activity();
+            Intent intent = new Intent(this, IntroActivity.class);
+            startActivityForResult(intent, INTRO_REQUEST_CODE);
         }
-
-        cropImageBuilder = cropImageBuilder.setGuidelines(CropImageView.Guidelines.ON);
-        startCropImage();
     }
 
-    private void startSaveStickerTask() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Uri getExtraSource() {
+        return getIntent().hasExtra(CutOut.CUTOUT_EXTRA_SOURCE) ? (Uri) getIntent().getParcelableExtra(CutOut.CUTOUT_EXTRA_SOURCE) : null;
+    }
+
+    private void start() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+            Uri uri = getExtraSource();
+
+            if (getIntent().getBooleanExtra(CutOut.CUTOUT_EXTRA_CROP, false)) {
+
+                CropImage.ActivityBuilder cropImageBuilder;
+                if (uri != null) {
+                    cropImageBuilder = CropImage.activity(uri);
+                } else {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+
+                        cropImageBuilder = CropImage.activity();
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.CAMERA},
+                                CAMERA_REQUEST_CODE);
+                        return;
+                    }
+                }
+
+                cropImageBuilder = cropImageBuilder.setGuidelines(CropImageView.Guidelines.ON);
+                cropImageBuilder.start(this);
+            } else {
+                if (uri != null) {
+                    setDrawViewBitmap(uri);
+                } else {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+
+                        EasyImage.openChooserWithGallery(this, getString(R.string.image_chooser_message), IMAGE_CHOOSER_REQUEST_CODE);
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.CAMERA},
+                                CAMERA_REQUEST_CODE);
+                    }
+                }
+            }
+
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_CODE);
+        }
+    }
+
+    private void startSaveDrawingTask() {
+        SaveDrawingTask task = new SaveDrawingTask(this);
+
         if (getIntent().getBooleanExtra(CutOut.CUTOUT_EXTRA_BORDER, false)) {
             Bitmap image = BitmapUtility.getBorderedBitmap(this.drawView.getDrawingCache(), BORDER_COLOR, BORDER_SIZE);
-            new SaveDrawingTask(this).execute(image);
+            task.execute(image);
+        } else {
+            task.execute(this.drawView.getDrawingCache());
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
-        if (requestCode == WRITE_EXTERNAL_STORAGE_CODE) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startSaveStickerTask();
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "You denied permissions to save the image. Please, grant the permissions to continue", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }
-    }
-
-    private void startCropImage() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        boolean alreadyShown = sharedPref.getBoolean(INTRO_SHOWN, false);
-
-        if (alreadyShown) {
-            cropImageBuilder.start(this);
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            start();
         } else {
-            Intent intent = new Intent(this, IntroActivity.class);
-            startActivityForResult(intent, INTRO_REQUEST);
+            setResult(Activity.RESULT_CANCELED);
+            finish();
         }
-
     }
 
     private void activateGestureView() {
         gestureView.getController().getSettings()
-                .setMaxZoom(4f)
+                .setMaxZoom(MAX_ZOOM)
                 .setDoubleTapZoom(-1f) // Falls back to max zoom level
                 .setPanEnabled(true)
                 .setZoomEnabled(true)
@@ -232,7 +272,7 @@ public class CutOutActivity extends AppCompatActivity {
                 .setDoubleTapEnabled(false);
     }
 
-    private void initializeDrawViewActionButtons() {
+    private void initializeActionButtons() {
         Button autoClearButton = findViewById(R.id.auto_clear_button);
         Button manualClearButton = findViewById(R.id.manual_clear_button);
         Button zoomButton = findViewById(R.id.zoom_button);
@@ -289,41 +329,76 @@ public class CutOutActivity extends AppCompatActivity {
         drawView.setButtons(undoButton, redoButton);
     }
 
+    private void exitWithError(Exception e) {
+        Intent intent = new Intent();
+        intent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, e);
+        setResult(CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE, intent);
+        finish();
+    }
+
+    private void setDrawViewBitmap(Uri uri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            drawView.setBitmap(bitmap);
+        } catch (IOException e) {
+            exitWithError(e);
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
-            Intent intent = new Intent();
-
             if (resultCode == Activity.RESULT_OK) {
 
-                drawView.setUri(result.getUri());
+                setDrawViewBitmap(result.getUri());
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                intent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, result.getError());
-                setResult(CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE, intent);
-                finish();
+                exitWithError(result.getError());
             } else {
-                setResult(Activity.RESULT_CANCELED, intent);
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
-        } else if (requestCode == INTRO_REQUEST) {
-            System.out.println("Using for the first time. Introduced application to user");
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
+        } else if (requestCode == INTRO_REQUEST_CODE) {
+            SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
             editor.putBoolean(INTRO_SHOWN, true);
             editor.apply();
-            cropImageBuilder.start(this);
+            start();
+        } else {
+            EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+                @Override
+                public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                    exitWithError(e);
+                }
+
+                @Override
+                public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                    setDrawViewBitmap(Uri.parse(imageFile.toURI().toString()));
+                }
+
+                @Override
+                public void onCanceled(EasyImage.ImageSource source, int type) {
+                    // Cancel handling, removing taken photo if it was canceled
+                    if (source == EasyImage.ImageSource.CAMERA) {
+                        File photoFile = EasyImage.lastlyTakenButCanceledPhoto(CutOutActivity.this);
+                        if (photoFile != null) photoFile.delete();
+                    }
+
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+            });
         }
     }
 
-    public void undo() {
+    private void undo() {
         drawView.undo();
     }
 
-    public void redo() {
+    private void redo() {
         drawView.redo();
     }
 
@@ -342,7 +417,7 @@ public class CutOutActivity extends AppCompatActivity {
 
         @Override
         protected Pair<String, Exception> doInBackground(Bitmap... bitmaps) {
-            File file = new File(Environment.getExternalStorageDirectory().toString(), UUID.randomUUID().toString() + ".png");
+            File file = new File(Environment.getExternalStorageDirectory().toString(), UUID.randomUUID().toString() + "." + SAVED_IMAGE_FORMAT);
 
             try (FileOutputStream out = new FileOutputStream(file)) {
                 bitmaps[0].compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -363,13 +438,16 @@ public class CutOutActivity extends AppCompatActivity {
 
                 resultIntent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, uri);
                 activityWeakReference.get().setResult(Activity.RESULT_OK, resultIntent);
+                activityWeakReference.get().finish();
+
             } else {
-                resultIntent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, result.second);
-                activityWeakReference.get().setResult(CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE, resultIntent);
+                activityWeakReference.get().exitWithError(result.second);
             }
-
-            activityWeakReference.get().finish();
-
         }
     }
+
+    public Bitmap getCurrentBitmap() {
+        return this.drawView.getDrawingCache();
+    }
+
 }

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">CutOut</string>
+    <string name="intro_magic_title">Automatic background clearing</string>
+    <string name="intro_manual_title">Manual background clearing</string>
+    <string name="intro_zoom_title">Zooming and Moving the picture</string>
+    <string name="intro_magic_description">Use the Magic Wand tool and touch parts of the background you want to erase</string>
+    <string name="intro_manual_description">Use the Pencil tool to erase the background dragging your finger around the screen</string>
+    <string name="intro_zoom_description">Use the Magnifier tool to Zoom in/out so you can make better cuts</string>
+    <string name="intro_label">Quick look</string>
+    <string name="image_chooser_message">Choose an image to cut</string>
 </resources>
