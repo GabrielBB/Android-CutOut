@@ -36,7 +36,7 @@
                 android:layout_height="28dp"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/done" />
+                android:layout_marginEnd="10dp" android:background="@drawable/done" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -57,7 +57,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="8dp"
-                android:background="@drawable/magnifier_selector"
+                android:layout_marginEnd="8dp" android:layout_marginStart="10dp" android:background="@drawable/magnifier_selector"
                 android:padding="5dip" />
 
             <Button
@@ -66,7 +66,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="8dp"
-                android:background="@drawable/magic_selector"
+                android:layout_marginEnd="8dp" android:layout_marginStart="5dp" android:background="@drawable/magic_selector"
                 android:padding="5dip" />
 
             <Button
@@ -75,7 +75,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/pencil_selector"
+                android:layout_marginEnd="15dp" android:layout_marginStart="5dp" android:background="@drawable/pencil_selector"
                 android:padding="5dip" />
 
             <LinearLayout

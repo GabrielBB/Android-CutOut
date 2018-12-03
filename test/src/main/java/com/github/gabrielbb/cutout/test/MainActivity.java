@@ -34,10 +34,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(view -> {
             final Uri testImageUri = getUriFromDrawable(R.drawable.test_image);
 
-            CutOut.activity(testImageUri)
-                    .bordered()
-                    .noCrop()
-                    .ad(getString(R.string.test_ad_id))
+            CutOut.activity()
                     .start(this);
         });
 

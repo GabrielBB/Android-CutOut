@@ -34,5 +34,5 @@ ext {
     javaVersion = JavaVersion.VERSION_1_8
     PUBLISH_GROUP_ID = 'com.github.gabrielbb'
     PUBLISH_ARTIFACT_ID = 'cutout'
-    PUBLISH_VERSION = '1.0.0'
+    PUBLISH_VERSION = '0.0.1'
 }

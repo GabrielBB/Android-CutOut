@@ -56,7 +56,10 @@ public class MainActivityTest {
         assertEquals(imageView.getTag(), activityRule.getActivity().getUriFromDrawable(R.drawable.image_icon));
 
         onView(withId(R.id.fab)).perform(click());
+    }
 
+    @Test
+    public void testActivityShowUp() {
         assertThat(getCurrentActivity(), instanceOf(CutOutActivity.class));
     }
 
@@ -108,6 +111,8 @@ public class MainActivityTest {
 
     @Test
     public void testMagicToolEffect() {
+        final Uri initialUri = (Uri) imageView.getTag();
+
         final CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
 
         testMagicToolButtonClick();
@@ -125,9 +130,47 @@ public class MainActivityTest {
         }
         while (loadingModal.getVisibility() == View.VISIBLE);
 
-        final Bitmap postClickBitmap = drawView.getCurrentBitmap();
+        assertFalse(initialBitmap.sameAs(drawView.getCurrentBitmap()));
 
-        assertFalse(initialBitmap.sameAs(postClickBitmap));
+        onView(withId(R.id.done)).perform(click());
+
+        assertNotEquals(imageView.getTag(), initialUri);
+    }
+
+    @Test
+    public void testUndoButton() {
+        final Uri initialUri = (Uri) imageView.getTag();
+
+        final CutOutActivity cutOutActivity = (CutOutActivity) getCurrentActivity();
+
+        testMagicToolButtonClick();
+
+        final DrawView drawView = cutOutActivity.findViewById(R.id.drawView);
+
+        final Bitmap initialBitmap = drawView.getCurrentBitmap();
+
+        onView(withId(R.id.drawView)).perform(click());
+
+        final View loadingModal = cutOutActivity.findViewById(R.id.loadingModal);
+
+        do {
+            SystemClock.sleep(2000);
+        }
+        while (loadingModal.getVisibility() == View.VISIBLE);
+
+        assertFalse(initialBitmap.sameAs(drawView.getCurrentBitmap()));
+
+        onView(withId(R.id.undo)).perform(click());
+
+        assertTrue(initialBitmap.sameAs(drawView.getCurrentBitmap()));
+
+        onView(withId(R.id.redo)).perform(click());
+
+        assertFalse(initialBitmap.sameAs(drawView.getCurrentBitmap()));
+
+        onView(withId(R.id.done)).perform(click());
+
+        assertNotEquals(imageView.getTag(), initialUri);
     }
 
     private Activity getCurrentActivity() {
