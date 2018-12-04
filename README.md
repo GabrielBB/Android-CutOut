@@ -8,6 +8,7 @@
 </div>
 
 [ ![Version](https://api.bintray.com/packages/gabrielbb/Android-CutOut/Android-CutOut/images/download.svg) ](https://bintray.com/gabrielbb/Android-CutOut/Android-CutOut/_latestVersion)
+[ ![Build](https://api.travis-ci.org/GabrielBB/Android-CutOut.svg?branch=master) ](https://api.travis-ci.org/GabrielBB/Android-CutOut.svg?branch=master)
 
 ## Usage
 
