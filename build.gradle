@@ -18,7 +18,10 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'https://jitpack.io' }
+        maven {
+            url 'https://jitpack.io'
+        }
+        maven { url 'https://dl.bintray.com/gabrielbb/Android-CutOut' }
     }
 }
 
@@ -34,5 +37,5 @@ ext {
     javaVersion = JavaVersion.VERSION_1_8
     PUBLISH_GROUP_ID = 'com.github.gabrielbb'
     PUBLISH_ARTIFACT_ID = 'cutout'
-    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_VERSION = '0.1.0'
 }

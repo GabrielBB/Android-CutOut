@@ -7,13 +7,13 @@ android {
 
 
 ext {
-    bintrayRepo = 'maven'
     libraryName = 'Android-CutOut'
-    bintrayName = libraryName
+    bintrayRepo = libraryName
+    bintrayName = bintrayRepo
     libraryDescription = 'Android image background removing library'
 
-    siteUrl = ''
-    gitUrl = ''
+    gitUrl = 'https://github.com/GabrielBB/Android-CutOut.git'
+    siteUrl = gitUrl
 
     developerId = 'gabrielbb'
     developerName = 'Gabriel Basilio Brito'

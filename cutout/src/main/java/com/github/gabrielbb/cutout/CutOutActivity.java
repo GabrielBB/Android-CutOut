@@ -63,7 +63,6 @@ public class CutOutActivity extends AppCompatActivity {
 
     private static final short MAX_ERASER_SIZE = 150;
     private static final short BORDER_SIZE = 45;
-    private static final int BORDER_COLOR = Color.WHITE;
     private static final float MAX_ZOOM = 4F;
     private static final String SAVED_IMAGE_FORMAT = "png";
 
@@ -235,8 +234,9 @@ public class CutOutActivity extends AppCompatActivity {
     private void startSaveDrawingTask() {
         SaveDrawingTask task = new SaveDrawingTask(this);
 
-        if (getIntent().getBooleanExtra(CutOut.CUTOUT_EXTRA_BORDER, false)) {
-            Bitmap image = BitmapUtility.getBorderedBitmap(this.drawView.getDrawingCache(), BORDER_COLOR, BORDER_SIZE);
+        int borderColor;
+        if ((borderColor = getIntent().getIntExtra(CutOut.CUTOUT_EXTRA_BORDER_COLOR, -1)) != -1) {
+            Bitmap image = BitmapUtility.getBorderedBitmap(this.drawView.getDrawingCache(), borderColor, BORDER_SIZE);
             task.execute(image);
         } else {
             task.execute(this.drawView.getDrawingCache());

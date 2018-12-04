@@ -2,6 +2,7 @@ package com.github.gabrielbb.cutout.test;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
             final Uri testImageUri = getUriFromDrawable(R.drawable.test_image);
 
             CutOut.activity()
+                    .src(testImageUri)
+                    .bordered()
+                    .noCrop()
+                    .ad()
                     .start(this);
         });
 

@@ -34,4 +34,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(path: ':cutout')
+    //implementation rootProject.PUBLISH_GROUP_ID + ":" + rootProject.PUBLISH_ARTIFACT_ID + ':' + rootProject.PUBLISH_VERSION
 }
