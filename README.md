@@ -7,13 +7,13 @@
   Android image background cutting library
 </div>
 
-
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.gabrielbb/cutout/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.gabrielbb/cutout)
 
 ## Usage
 
 Add Gradle dependency:
 ```groovy
-implementation 'com.github.gabrielbb:cutout:0.0.2'
+implementation 'com.github.gabrielbb:cutout:0.1.0'
 ```
 
 Start the CutOut screen with this single line:
@@ -22,13 +22,27 @@ Start the CutOut screen with this single line:
 CutOut.activity().start(this);
 ```
 
+<img src="/images/Capture.JPG" width="200"> &nbsp; <img src="/images/Capture_2.JPG" width="200">
 
-![image info](/images/Capture.JPG) &nbsp; ![image info](./images/Capture_2.JPG)
+### Getting the result
 
+```java
+@Override  
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {   
+ if (requestCode == CutOut.CUTOUT_ACTIVITY_REQUEST_CODE) {  
+        if (resultCode == Activity.RESULT_OK) {  
+            Uri uri = CutOut.getUri(data); // PNG URI
+		} else if (resultCode == CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE) {  
+            Exception ex = CutOut.getError(data); 
+	 }
+  }  
+}
+```
 
 ## Features
 
-![image info](/images/Magic_Wand.JPG) &nbsp; ![image info](/images/Pencil.JPG) &nbsp; ![image info](/images/Zoom.JPG)
+<img src="/images/Magic_Wand.JPG" width="250"> &nbsp; <img src="/images/Pencil.JPG" width="250"> &nbsp; <img src="/images/Zoom.JPG" width="250">
+
 
 ## Options
 
