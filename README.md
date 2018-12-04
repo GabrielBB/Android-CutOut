@@ -1,19 +1,10 @@
 <div align="center">
 
   <h1>
-
-    <br/>
-
     ✂️
-
-    <br />
-
     Android-CutOut
-
   </h1>
-
-  Android image background removing library
-
+  Android image background cutting library
 </div>
 
 
@@ -32,12 +23,12 @@ CutOut.activity().start(this);
 ```
 
 
-![image info](./images/CAPTURE.jpg) &nbsp; ![image info](./images/CAPTURE_2.jpg)
+![image info](/images/Capture.JPG) &nbsp; ![image info](./images/Capture_2.JPG)
 
 
 ## Features
 
-![image info](./images/Magic_Wand.jpg) &nbsp; ![image info](./images/Pencil.jpg) &nbsp; ![image info](./images/Zoom.jpg)
+![image info](/images/Magic_Wand.JPG) &nbsp; ![image info](/images/Pencil.JPG) &nbsp; ![image info](/images/Zoom.JPG)
 
 ## Options
 
