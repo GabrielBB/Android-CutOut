@@ -10,5 +10,8 @@ android:
     - android-28
     - extra-android-m2repository
 
+before_install:
+ - chmod +x gradlew
+ 
 script:
  - ./gradlew clean build
