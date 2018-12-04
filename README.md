@@ -7,7 +7,7 @@
   Android image background cutting library
 </div>
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.gabrielbb/cutout/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.gabrielbb/cutout)
+[ ![Version](https://api.bintray.com/packages/gabrielbb/Android-CutOut/Android-CutOut/images/download.svg) ](https://bintray.com/gabrielbb/Android-CutOut/Android-CutOut/_latestVersion)
 
 ## Usage
 
