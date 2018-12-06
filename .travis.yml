@@ -3,11 +3,7 @@ jdk: oraclejdk8
 sudo: false
 
 android:
-  licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
-    
+
   components:
     - tools
     - platform-tools
@@ -21,9 +17,6 @@ android:
     - sys-img-armeabi-v7a-google_apis-25
     
 before_script:
-  # Prepare pre-accepted licenses to not be promted at installation
-  - mkdir -p "$ANDROID_HOME/licenses"
-  - cp ./google-licenses/* "$ANDROID_HOME/licenses/"
   - echo yes | android update sdk --all --filter build-tools-28.0.3 --no-ui --force
   - touch local.properties
   - chmod +x gradlew
