@@ -4,10 +4,6 @@
 
     <application>
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9013457689625223~9473637987" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

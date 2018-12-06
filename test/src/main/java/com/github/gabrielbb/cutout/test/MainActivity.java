@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
                     .src(testImageUri)
                     .bordered()
                     .noCrop()
-                    .ad()
                     .start(this);
         });
 
@@ -47,21 +46,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == CutOut.CUTOUT_ACTIVITY_REQUEST_CODE) {
 
-            if (resultCode == Activity.RESULT_OK) {
-                Uri uri = CutOut.getUri(data);
-
-                imageView.setImageURI(uri);
-                imageView.setTag(uri);
-
-            } else if (resultCode == CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception ex = CutOut.getError(data);
-                throw new RuntimeException(ex);
-            } else {
-                // CutOut Activity was cancelled by the user
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    Uri imageUri = CutOut.getUri(data);
+                    // Save the image using the returned Uri here
+                    imageView.setImageURI(imageUri);
+                    imageView.setTag(imageUri);
+                    break;
+                case CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE:
+                    Exception ex = CutOut.getError(data);
+                    break;
+                default:
+                    System.out.print("User cancelled the CutOut screen");
             }
         }
     }

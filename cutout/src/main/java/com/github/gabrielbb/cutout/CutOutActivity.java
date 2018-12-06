@@ -28,9 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.alexvasilkov.gestures.views.interfaces.GestureView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -140,23 +137,6 @@ public class CutOutActivity extends AppCompatActivity {
         Button doneButton = findViewById(R.id.done);
 
         doneButton.setOnClickListener(v -> startSaveDrawingTask());
-
-        FrameLayout adViewContainer = findViewById(R.id.adViewContainer);
-
-        if (getIntent().hasExtra(CutOut.CUTOUT_EXTRA_AD_ID)) {
-            String adId = getIntent().getStringExtra(CutOut.CUTOUT_EXTRA_AD_ID);
-
-            AdView adView = new AdView(getApplicationContext());
-            adView.setAdSize(AdSize.BANNER);
-            adView.setAdUnitId(adId);
-
-            adViewContainer.addView(adView);
-
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        } else {
-            adViewContainer.setVisibility(View.GONE);
-        }
 
         if (getIntent().getBooleanExtra(CUTOUT_EXTRA_INTRO, false) && !getPreferences(Context.MODE_PRIVATE).getBoolean(INTRO_SHOWN, false)) {
             Intent intent = new Intent(this, IntroActivity.class);

@@ -14,7 +14,6 @@ public class CutOut {
     public static final short CUTOUT_ACTIVITY_RESULT_ERROR_CODE = 3680;
 
     static final String CUTOUT_EXTRA_SOURCE = "CUTOUT_EXTRA_SOURCE";
-    static final String CUTOUT_EXTRA_AD_ID = "CUTOUT_EXTRA_AD_ID";
     static final String CUTOUT_EXTRA_RESULT = "CUTOUT_EXTRA_RESULT";
     static final String CUTOUT_EXTRA_BORDER_COLOR = "CUTOUT_EXTRA_BORDER_COLOR";
     static final String CUTOUT_EXTRA_CROP = "CUTOUT_EXTRA_CROP";
@@ -31,10 +30,7 @@ public class CutOut {
 
         @Nullable
         private Uri source; // The image to crop source Android uri
-        @Nullable
-        private String adId = "ca-app-pub-3940256099942544/6300978111"; // Dedicated test ad unit ID for Android banners
         private boolean bordered;
-        private boolean showAd;
         private boolean crop = true; // By default the cropping activity is started
         private boolean intro;
         private int borderColor = Color.WHITE; // Default border color is no border color is passed
@@ -52,10 +48,6 @@ public class CutOut {
 
             if (source != null) {
                 intent.putExtra(CUTOUT_EXTRA_SOURCE, source);
-            }
-
-            if (showAd) {
-                intent.putExtra(CUTOUT_EXTRA_AD_ID, adId);
             }
 
             if (bordered) {
@@ -81,24 +73,6 @@ public class CutOut {
         public ActivityBuilder src(Uri source) {
             this.source = source;
             return this;
-        }
-
-        /**
-         * Display an Admob Banner Ad at the bottom of the screen. This method is meant to be used for testing purposes only. If you want to use it for production you have to pass your Admob Banner Ad Id
-         */
-        public ActivityBuilder ad() {
-            this.showAd = true;
-            return this;
-        }
-
-        /**
-         * Display an Admob Banner Ad at the bottom of the screen
-         *
-         * @param adId Admob Banner Ad Id that is used used to initialize the Banner Ad.
-         */
-        public ActivityBuilder ad(String adId) {
-            this.adId = adId;
-            return ad();
         }
 
         /**

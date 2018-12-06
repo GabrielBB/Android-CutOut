@@ -28,16 +28,23 @@ CutOut.activity().start(this);
 ### Getting the result
 
 ```java
-@Override  
-protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {   
- if (requestCode == CutOut.CUTOUT_ACTIVITY_REQUEST_CODE) {  
-        if (resultCode == Activity.RESULT_OK) {  
-            Uri uri = CutOut.getUri(data); // PNG URI
-		} else if (resultCode == CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE) {  
-            Exception ex = CutOut.getError(data); 
-	 }
-  }  
-}
+@Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CutOut.CUTOUT_ACTIVITY_REQUEST_CODE) {
+
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    Uri imageUri = CutOut.getUri(data);
+                    // Save the image using the returned Uri here
+                    break;
+                case CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE:
+                    Exception ex = CutOut.getError(data);
+                    break;
+                default:
+                    System.out.print("User cancelled the CutOut screen");
+            }
+        }
+    }
 ```
 
 ## Features
@@ -54,7 +61,6 @@ You can use one or more options from these:
                     .src(uri)
                     .bordered()
                     .noCrop()
-                    .ad()
                     .intro()
                     .start(this);
 ```
@@ -95,14 +101,4 @@ By default and thanks to this library: [Android-Image-Cropper](https://github.co
 CutOut.activity().intro().start(this);
 ```
 
-Display an intro explaining every button usage. The user can skip the intro and it is only shown once. The images displayed in the intro are the same you saw in the "Features" section of this document
-
-
-
- - #### ad
-
-  ```java
-CutOut.activity().ad(“admob-banner-ad-id”).start(this);
-```
-
-Display an  [Admob Banner Ad](https://developers.google.com/admob/android/banner) at the bottom of the screen. To make this work make sure to do everything explained here beforehand: [Get Started with Admob Ads](https://developers.google.com/admob/android/quick-start).
+Display an intro explaining every button usage. The user can skip the intro and it is only shown once. The images displayed in the intro are the same you saw in the "Features" section of this document.
