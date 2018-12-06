@@ -10,16 +10,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -32,10 +29,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.UUID;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -53,7 +47,7 @@ public class CutOutActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 3;
 
     private static final String INTRO_SHOWN = "INTRO_SHOWN";
-    private FrameLayout loadingModal;
+    FrameLayout loadingModal;
     private GestureView gestureView;
     private DrawView drawView;
     private LinearLayout manualClearSettingsLayout;
@@ -61,7 +55,6 @@ public class CutOutActivity extends AppCompatActivity {
     private static final short MAX_ERASER_SIZE = 150;
     private static final short BORDER_SIZE = 45;
     private static final float MAX_ZOOM = 4F;
-    private static final String SAVED_IMAGE_FORMAT = "png";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,7 +303,7 @@ public class CutOutActivity extends AppCompatActivity {
         drawView.setButtons(undoButton, redoButton);
     }
 
-    private void exitWithError(Exception e) {
+    void exitWithError(Exception e) {
         Intent intent = new Intent();
         intent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, e);
         setResult(CutOut.CUTOUT_ACTIVITY_RESULT_ERROR_CODE, intent);
@@ -381,50 +374,6 @@ public class CutOutActivity extends AppCompatActivity {
 
     private void redo() {
         drawView.redo();
-    }
-
-    private static class SaveDrawingTask extends AsyncTask<Bitmap, Void, Pair<String, Exception>> {
-        private final WeakReference<CutOutActivity> activityWeakReference;
-
-        SaveDrawingTask(CutOutActivity activity) {
-            this.activityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            activityWeakReference.get().loadingModal.setVisibility(VISIBLE);
-        }
-
-        @Override
-        protected Pair<String, Exception> doInBackground(Bitmap... bitmaps) {
-            File file = new File(Environment.getExternalStorageDirectory().toString(), UUID.randomUUID().toString() + "." + SAVED_IMAGE_FORMAT);
-
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                bitmaps[0].compress(Bitmap.CompressFormat.PNG, 100, out);
-                return new Pair<>(file.getAbsolutePath(), null);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new Pair<>(null, e);
-            }
-        }
-
-        protected void onPostExecute(Pair<String, Exception> result) {
-            super.onPostExecute(result);
-
-            Intent resultIntent = new Intent();
-
-            if (result.first != null) {
-                Uri uri = Uri.parse(result.first);
-
-                resultIntent.putExtra(CutOut.CUTOUT_EXTRA_RESULT, uri);
-                activityWeakReference.get().setResult(Activity.RESULT_OK, resultIntent);
-                activityWeakReference.get().finish();
-
-            } else {
-                activityWeakReference.get().exitWithError(result.second);
-            }
-        }
     }
 
 }
