@@ -3,22 +3,32 @@ jdk: oraclejdk8
 sudo: false
 
 android:
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+    
   components:
     - tools
     - platform-tools
     - build-tools-28.0.3
     - android-28
-    - android-19
+    - android-25
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-19
-
-before_install: 
+    - addon-google_apis-google-25
+    - sys-img-armeabi-v7a-google_apis-25
+    
+before_script:
+  # Prepare pre-accepted licenses to not be promted at installation
+  - mkdir -p "$ANDROID_HOME/licenses"
+  - cp ./google-licenses/* "$ANDROID_HOME/licenses/"
   - echo yes | android update sdk --all --filter build-tools-28.0.3 --no-ui --force
   - touch local.properties
   - chmod +x gradlew
-  - echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
+  - android list targets
+  - echo yes | android create avd --force -n test -t android-25 --abi google_apis/armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell settings put global window_animation_scale 0 &
