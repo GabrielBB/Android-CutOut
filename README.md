@@ -14,7 +14,7 @@
 
 Add Gradle dependency:
 ```groovy
-implementation 'com.github.gabrielbb:cutout:0.1.0'
+implementation 'com.github.gabrielbb:cutout:0.1.2'
 ```
 
 Start the CutOut screen with this single line:
@@ -102,3 +102,29 @@ CutOut.activity().intro().start(this);
 ```
 
 Display an intro explaining every button usage. The user can skip the intro and it is only shown once. The images displayed in the intro are the same you saw in the "Features" section of this document.
+
+## Change log
+*0.1.2*
+- Removed Admob Ads automatic integration. I will probably add it later. For now, it was causing problems.
+- Images are now saved as temporary files in the cache directory. This guarantees that these images will be deleted when users uninstall your app or when the disk memory is low. If you want the images to live forever on the Gallery, you should take the returned Uri and save the image there by yourself.
+
+## License
+Copyright (c) 2018 Gabriel Basilio Brito
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to use, 
+copy, modify, merge, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+1 - You cannot use this software to make an Android app that its main goal is to remove background from images and publish it to the Google Play Store, but you can use it to integrate the functionality in an existing app or a new app that does more than just this.
+
+2 - The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
