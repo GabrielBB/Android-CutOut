@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Uri getUriFromDrawable(int drawableId) {
+    public Uri getUriFromDrawable(int drawableId) {
         return Uri.parse("android.resource://" + getPackageName() + "/drawable/" + getApplicationContext().getResources().getResourceEntryName(drawableId));
     }
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void parseGallery(Intent data) {
+    public void parseGallery(Intent data) {
 
         Uri selectedImage = data.getData();
 
