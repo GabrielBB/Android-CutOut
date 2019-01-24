@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Selfie Stickers for Whatsapp</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="app_name">Android-CutOut</string>
     <string name="image_description">Image</string>
     <string name="test_ad_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
