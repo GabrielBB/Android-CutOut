@@ -8,4 +8,5 @@
     <string name="intro_zoom_description">Use the Magnifier tool to Zoom in/out so you can make better cuts</string>
     <string name="intro_label">Quick look</string>
     <string name="image_chooser_message">Choose an image to cut</string>
+    <string name="eraser_size">Eraser size:</string>
 </resources>

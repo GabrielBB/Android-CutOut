@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CutOut</string>
+    <string name="intro_magic_title">Limpeza automática do fundo</string>
+    <string name="intro_manual_title">Limpeza Manual do fundo</string>
+    <string name="intro_zoom_title">Aproximar e mover a imagem</string>
+    <string name="intro_magic_description">Use a ferramenta varinha mágica e toque em pontos do fundo que queira remover</string>
+    <string name="intro_manual_description">Use a ferramenta Caneta para remover o fundo, arrastando seu dedo sobre a imagem</string>
+    <string name="intro_zoom_description">Use a ferramenta Maginificadora para aproximar ou afastar a imagem, assim você pode fazer cortes mais precisos</string>
+    <string name="intro_label">Visão rápida</string>
+    <string name="image_chooser_message">Escolha uma imagem para cortar</string>
+    <string name="eraser_size">Tamanho do apagador:</string>
+</resources>
