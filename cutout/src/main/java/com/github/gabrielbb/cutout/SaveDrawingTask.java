@@ -18,7 +18,7 @@ import static android.view.View.VISIBLE;
 
 class SaveDrawingTask extends AsyncTask<Bitmap, Void, Pair<File, Exception>> {
 
-    private static final String SAVED_IMAGE_FORMAT = "png";
+    private static final String SAVED_IMAGE_FORMAT = ".png";
     private static final String SAVED_IMAGE_NAME = "cutout_tmp";
 
     private final WeakReference<CutOutActivity> activityWeakReference;
