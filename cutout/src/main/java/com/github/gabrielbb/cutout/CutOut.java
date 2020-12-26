@@ -18,6 +18,7 @@ public class CutOut {
     static final String CUTOUT_EXTRA_BORDER_COLOR = "CUTOUT_EXTRA_BORDER_COLOR";
     static final String CUTOUT_EXTRA_CROP = "CUTOUT_EXTRA_CROP";
     static final String CUTOUT_EXTRA_INTRO = "CUTOUT_EXTRA_INTRO";
+    static final String CUTOUT_EXTRA_SAVE_TYPE = "CUTOUT_EXTRA_SAVE_TYPE";
 
     public static ActivityBuilder activity() {
         return new ActivityBuilder();
@@ -34,6 +35,7 @@ public class CutOut {
         private boolean crop = true; // By default the cropping activity is started
         private boolean intro;
         private int borderColor = Color.WHITE; // Default border color is no border color is passed
+        private CutOutSaveTypes type;
 
         private ActivityBuilder() {
 
@@ -61,6 +63,9 @@ public class CutOut {
             if (intro) {
                 intent.putExtra(CUTOUT_EXTRA_INTRO, true);
             }
+
+            if(type != null)
+                intent.putExtra(CUTOUT_EXTRA_SAVE_TYPE, type);
 
             return intent;
         }
@@ -98,6 +103,18 @@ public class CutOut {
          */
         public ActivityBuilder noCrop() {
             this.crop = false;
+            return this;
+        }
+
+        /**
+         * Set saving image type it can either be:
+         * Saved to cache
+         * Saved to storage
+         * @param type
+         * @return
+         */
+        public ActivityBuilder saveType(CutOutSaveTypes type) {
+            this.type = type;
             return this;
         }
 
