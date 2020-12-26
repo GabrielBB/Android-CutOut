@@ -38,6 +38,7 @@ import top.defaults.checkerboarddrawable.CheckerboardDrawable;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.github.gabrielbb.cutout.CutOut.CUTOUT_EXTRA_INTRO;
+import static com.github.gabrielbb.cutout.CutOut.CUTOUT_EXTRA_SAVE_TYPE;
 
 public class CutOutActivity extends AppCompatActivity {
 
@@ -205,7 +206,8 @@ public class CutOutActivity extends AppCompatActivity {
     }
 
     private void startSaveDrawingTask() {
-        SaveDrawingTask task = new SaveDrawingTask(this);
+        CutOutSaveTypes type = (CutOutSaveTypes) getIntent().getSerializableExtra(CUTOUT_EXTRA_SAVE_TYPE);
+        SaveDrawingTask task = new SaveDrawingTask(this , type);
 
         int borderColor;
         if ((borderColor = getIntent().getIntExtra(CutOut.CUTOUT_EXTRA_BORDER_COLOR, -1)) != -1) {
