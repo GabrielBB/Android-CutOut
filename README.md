@@ -57,12 +57,12 @@ CutOut.activity().start(this);
 You can use one or more options from these:
 
 ```java
-        CutOut.activity()
+            CutOut.activity()
                     .src(uri)
                     .bordered()
                     .noCrop()
                     .intro()
-					.saveType(CutOutSaveTypes.SAVE_TO_STORAGE)
+		    .saveType(CutOutSaveTypes.SAVE_TO_STORAGE)
                     .start(this);
 ```
 
