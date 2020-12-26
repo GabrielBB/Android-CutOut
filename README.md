@@ -62,6 +62,7 @@ You can use one or more options from these:
                     .bordered()
                     .noCrop()
                     .intro()
+					.saveType(CutOutSaveTypes.SAVE_TO_STORAGE)
                     .start(this);
 ```
 
